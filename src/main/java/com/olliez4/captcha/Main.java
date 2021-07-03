@@ -47,16 +47,14 @@ public class Main extends JavaPlugin implements Listener {
             e.setJoinMessage("");
             // Wait "wait-time" ticks before sending the GUI so they do not instantly close
             // it
-            Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-                public void run() {
-                    // The player is not verified, alert console to make logs easier and send the
-                    // captcha to the player
-                    Player p = e.getPlayer();
-                    getLogger().info(p.getName() + " has not verified their captcha code before. Sending now.");
-                    gui.send(p);
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10000, 255, true, false, false));
-                    p.setInvulnerable(true);
-                }
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+                // The player is not verified, alert console to make logs easier and send the
+                // captcha to the player
+                Player p = e.getPlayer();
+                getLogger().info(p.getName() + " has not verified their captcha code before. Sending now.");
+                gui.send(p);
+                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10000, 255, true, false, false));
+                p.setInvulnerable(true);
             }, getConfig().getInt("wait-time"));
         }
     }

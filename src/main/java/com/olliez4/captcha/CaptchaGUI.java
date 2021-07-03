@@ -216,21 +216,19 @@ public class CaptchaGUI implements Listener {
     public void close(InventoryCloseEvent e) {
         Player p = (Player) e.getPlayer();
         // Add a scheduler so that the GUI does not glitch
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            public void run() {
-                // If the player is not verified at all
-                if (!verified.contains(p)) {
-                    if (!playerVerified(p)) {
-                        try {
-                            // If the dismissed inventory is the captcha inventory, the player
-                            if (p.getOpenInventory() != null) {
-                                if (!p.getOpenInventory().getTitle().contains(title)) {
-                                    // Prevent double logging
-                                    send(p);
-                                }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            // If the player is not verified at all
+            if (!verified.contains(p)) {
+                if (!playerVerified(p)) {
+                    try {
+                        // If the dismissed inventory is the captcha inventory, the player
+                        if (p.getOpenInventory() != null) {
+                            if (!p.getOpenInventory().getTitle().contains(title)) {
+                                // Prevent double logging
+                                send(p);
                             }
-                        } catch (Exception e2) {
                         }
+                    } catch (Exception e2) {
                     }
                 }
             }

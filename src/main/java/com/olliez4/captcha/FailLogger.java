@@ -1,11 +1,11 @@
 package com.olliez4.captcha;
 
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class FailLogger {
 
@@ -13,7 +13,7 @@ public class FailLogger {
         // Only log if the logger is enabled
         if (plugin.getConfig().getBoolean("Use-Logging")) {
             // Format the text
-            String text = reason + " - " + p.getUniqueId().toString() + " - " + getTime();
+            String text = reason + " - " + p.getUniqueId() + " - " + getTime();
             // Get their previous failures
             List<String> failures = plugin.getConfig().getStringList("Failed-Captcha-Attempts." + p.getName());
             // Only ban players if the module is enabled
@@ -38,7 +38,9 @@ public class FailLogger {
         }
     }
 
-    // Get the amount of times a player has failed the captcha
+    /**
+     * Get the amount of times a player has failed the captcha
+     */
     public static int getFailures(JavaPlugin plugin, Player p) {
         // The placeholder
         int times = 0;
@@ -51,7 +53,9 @@ public class FailLogger {
         return times;
     }
 
-    // Get the time as a formatted date
+    /**
+     * Get the time as a formatted date
+     */
     private String getTime() {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         return ("[" + format.format(new Date()) + "]");

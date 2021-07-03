@@ -14,7 +14,9 @@ public class Main extends JavaPlugin implements Listener {
 
     public static String format;
 
-    // An instance of the CaptchaGUI class
+    /**
+     * An instance of the CaptchaGUI class
+     */
     CaptchaGUI gui;
 
     public void onEnable() {
@@ -59,7 +61,12 @@ public class Main extends JavaPlugin implements Listener {
         }
     }
 
-    // Check if the player is verified or not
+    /**
+     * Check if the player is verified or not
+     *
+     * @param pl
+     * @return
+     */
     public boolean playerVerified(Player pl) {
         return getConfig().getStringList("Verified-Players").contains(pl.getUniqueId().toString());
     }

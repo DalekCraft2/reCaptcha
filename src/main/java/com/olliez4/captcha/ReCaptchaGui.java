@@ -108,7 +108,7 @@ public class ReCaptchaGui implements Listener {
             // Add the player to the list of verified users
             verified.add(player);
             // Alert staff they pass
-            alertOp(player, "", true);
+            alertOp(player, player.getName() + " passed the Captcha", true);
             // Send the join message
             Bukkit.broadcastMessage(ReCaptchaPlugin.format.replaceAll("NAME", player.getName()));
             // Reset their walk speed
@@ -274,7 +274,7 @@ public class ReCaptchaGui implements Listener {
                             Objects.requireNonNull(plugin.getConfig().getString("captcha-failed-message")).replaceAll("%amount%",
                                     "" + plugin.getConfig().getInt("Failure-Ban-Times"))));
                     // Alert staff
-                    alertOp(whoClicked, "", false);
+                    alertOp(whoClicked, whoClicked.getName() + " failed the Captcha", false);
                     // Log that they have failed with a reason
                     new FailureLogger(plugin, whoClicked, "Failed Captcha");
                 }
@@ -301,8 +301,8 @@ public class ReCaptchaGui implements Listener {
         return itemStack;
     }
 
-    private void alertOp(Player player, String reason, boolean pass) {
-        if (!pass) {
+    private void alertOp(Player player, String reason, boolean passed) {
+        if (!passed) {
             if (!reason.equals("")) {
                 for (Player op : Bukkit.getOnlinePlayers()) {
                     if (op.isOp() || op.hasPermission("captcha.viewalert"))
@@ -374,5 +374,4 @@ public class ReCaptchaGui implements Listener {
         }
         return string;
     }
-
 }

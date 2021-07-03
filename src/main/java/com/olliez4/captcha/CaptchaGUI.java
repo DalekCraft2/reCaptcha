@@ -298,7 +298,7 @@ public class CaptchaGUI implements Listener {
 
     private void alertOp(Player p, String reason, boolean pass) {
         if (!pass) {
-            if (reason != "") {
+            if (!reason.equals("")) {
                 for (Player op : Bukkit.getOnlinePlayers()) {
                     if (op.isOp() || op.hasPermission("captcha.viewalert"))
                         op.sendMessage(ChatColor.RED + p.getName() + " has failed the captcha for " + reason);

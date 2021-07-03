@@ -227,7 +227,7 @@ public class CaptchaGUI implements Listener {
                                 send(p);
                             }
                         }
-                    } catch (Exception e2) {
+                    } catch (Exception ignored) {
                     }
                 }
             }
@@ -326,12 +326,11 @@ public class CaptchaGUI implements Listener {
      */
     private String formatItemName(Material mat) {
         String name = mat.toString().replaceAll("_STAINED_GLASS_PANE", "");
-        String formattedName = "";
+        StringBuilder formattedName = new StringBuilder();
         for (String s : name.split("_")) {
-            formattedName = formattedName + s.substring(0, 1).toUpperCase() + s.substring(1, s.length()).toLowerCase()
-                    + " ";
+            formattedName.append(s.substring(0, 1).toUpperCase()).append(s.substring(1).toLowerCase()).append(" ");
         }
-        return applyColour(formattedName, mat);
+        return applyColour(formattedName.toString(), mat);
     }
 
     /**

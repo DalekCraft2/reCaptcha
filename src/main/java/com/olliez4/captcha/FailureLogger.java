@@ -6,7 +6,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 public class FailureLogger {
 
@@ -23,7 +22,7 @@ public class FailureLogger {
                     // Manage the commands ran to ban people if their failure count is too high
                     if ((failures.size() % plugin.getConfig().getInt("Failure-Ban-Times")) == 0) {
                         // Ban the user, not just kick them
-                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Objects.requireNonNull(plugin.getConfig().getString("Ban-Command")).replaceAll("%player%", player.getName()));
+                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), plugin.getConfig().getString("Ban-Command").replaceAll("%player%", player.getName()));
                         // Add the ban to the log
                         text = text + " - Ban issued (exceeded maximum failure count)";
                     }

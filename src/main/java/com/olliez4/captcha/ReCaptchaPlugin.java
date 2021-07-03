@@ -10,8 +10,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Objects;
-
 public class ReCaptchaPlugin extends JavaPlugin implements Listener {
 
     public static String format;
@@ -45,7 +43,7 @@ public class ReCaptchaPlugin extends JavaPlugin implements Listener {
     public void join(PlayerJoinEvent playerJoinEvent) {
         // If the player is verified, ignore them
         if (!isPlayerVerified(playerJoinEvent.getPlayer())) {
-            format = Objects.requireNonNull(playerJoinEvent.getJoinMessage()).replace(playerJoinEvent.getPlayer().getName(), "NAME");
+            format = playerJoinEvent.getJoinMessage().replace(playerJoinEvent.getPlayer().getName(), "NAME");
             playerJoinEvent.setJoinMessage("");
             // Wait "wait-time" ticks before sending the GUI so they do not instantly close
             // it

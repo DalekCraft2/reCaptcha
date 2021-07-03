@@ -17,7 +17,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 public class ReCaptchaGui implements Listener {
 
@@ -96,7 +99,7 @@ public class ReCaptchaGui implements Listener {
             // Close the GUI
             player.closeInventory();
             // Send the message to them to say they have passed the captcha
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.getConfig().getString("pass-message"))));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("pass-message")));
             // Get the list of verified players from the config.yml
             List<String> stringList = plugin.getConfig().getStringList("Verified-Players");
             // Add the player to the list
@@ -146,7 +149,6 @@ public class ReCaptchaGui implements Listener {
             ItemStack itemStack = new ItemStack(colours.get(toAdd));
             ItemMeta itemMeta = itemStack.getItemMeta();
             // This is to prevent items stacking (EG two types of the same glass)
-            assert itemMeta != null;
             itemMeta.setCustomModelData(item);
             itemMeta.setDisplayName(formatItemName(itemStack.getType()));
             itemStack.setItemMeta(itemMeta);
@@ -166,7 +168,6 @@ public class ReCaptchaGui implements Listener {
         // Format the correct item
         ItemStack itemStack = new ItemStack(material);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        assert itemMeta != null;
         itemMeta.setDisplayName(formatItemName(material));
         itemStack.setItemMeta(itemMeta);
 
@@ -205,8 +206,7 @@ public class ReCaptchaGui implements Listener {
         if (!isPlayerVerified(asyncPlayerChatEvent.getPlayer())) {
             if (!verified.contains(asyncPlayerChatEvent.getPlayer())) {
                 // Warn the player
-                asyncPlayerChatEvent.getPlayer().sendMessage(
-                        ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.getConfig().getString("can-not-talk"))));
+                asyncPlayerChatEvent.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("can-not-talk")));
                 // Cancel the message
                 asyncPlayerChatEvent.setCancelled(true);
             }
@@ -261,18 +261,13 @@ public class ReCaptchaGui implements Listener {
             // Proceed if the inventory title is correct
             if (inventoryView.getTitle().contains(title)) {
                 // Strip down the title to a material and compare to the clicked item's material
-                assert currentItem != null;
-                if (currentItem.getType().equals(
-                        Material.getMaterial(inventoryView.getTitle().replaceAll(title, "").replaceAll(" ", "_").toUpperCase()
-                                + "_STAINED_GLASS_PANE"))) {
+                if (currentItem.getType().equals(Material.getMaterial(inventoryView.getTitle().replaceAll(title, "").replaceAll(" ", "_").toUpperCase() + "_STAINED_GLASS_PANE"))) {
                     // Verify the player as they have clicked the correct item
                     verifyPlayer((Player) inventoryClickEvent.getWhoClicked());
                 } else {
                     // Kick the player, they have failed the captcha
                     Player whoClicked = (Player) inventoryClickEvent.getWhoClicked();
-                    whoClicked.kickPlayer(ChatColor.translateAlternateColorCodes('&',
-                            Objects.requireNonNull(plugin.getConfig().getString("captcha-failed-message")).replaceAll("%amount%",
-                                    "" + plugin.getConfig().getInt("Failure-Ban-Times"))));
+                    whoClicked.kickPlayer(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("captcha-failed-message").replaceAll("%amount%", "" + plugin.getConfig().getInt("Failure-Ban-Times"))));
                     // Alert staff
                     alertOp(whoClicked, whoClicked.getName() + " failed the Captcha", false);
                     // Log that they have failed with a reason
@@ -295,7 +290,6 @@ public class ReCaptchaGui implements Listener {
     private ItemStack emptyGlass() {
         ItemStack itemStack = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta itemMeta = itemStack.getItemMeta();
-        assert itemMeta != null;
         itemMeta.setDisplayName("");
         itemStack.setItemMeta(itemMeta);
         return itemStack;
@@ -305,19 +299,22 @@ public class ReCaptchaGui implements Listener {
         if (!passed) {
             if (!reason.equals("")) {
                 for (Player op : Bukkit.getOnlinePlayers()) {
-                    if (op.isOp() || op.hasPermission("captcha.viewalert"))
+                    if (op.isOp() || op.hasPermission("captcha.viewalert")) {
                         op.sendMessage(ChatColor.RED + player.getName() + " has failed the captcha for " + reason);
+                    }
                 }
             } else {
                 for (Player op : Bukkit.getOnlinePlayers()) {
-                    if (op.isOp() || op.hasPermission("captcha.viewalert"))
+                    if (op.isOp() || op.hasPermission("captcha.viewalert")) {
                         op.sendMessage(ChatColor.RED + player.getName() + " has failed the captcha");
+                    }
                 }
             }
         } else {
             for (Player op : Bukkit.getOnlinePlayers()) {
-                if (op.isOp() || op.hasPermission("captcha.viewalert"))
+                if (op.isOp() || op.hasPermission("captcha.viewalert")) {
                     op.sendMessage(ChatColor.GREEN + player.getName() + " has passed the captcha");
+                }
             }
         }
     }

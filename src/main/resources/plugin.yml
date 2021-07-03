@@ -1,4 +1,4 @@
-main: com.olliez4.captcha.Main
+main: com.olliez4.captcha.ReCaptchaPlugin
 name: reCaptcha
 version: 1.0.0
 author: OLLIEZ4

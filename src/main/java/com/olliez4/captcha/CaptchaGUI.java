@@ -50,6 +50,7 @@ public class CaptchaGUI implements Listener {
      */
     ArrayList<Material> colours = new ArrayList<>();
 
+    // TODO Figure out how to describe the plugin parameter
     /**
      * Instantiate the class
      *
@@ -80,7 +81,7 @@ public class CaptchaGUI implements Listener {
     /**
      * Method to verify a player
      *
-     * @param pl
+     * @param pl The player to verify
      */
     public void verifyPlayer(Player pl) {
         // Add one to the amount of times a player has passed the captcha
@@ -121,7 +122,7 @@ public class CaptchaGUI implements Listener {
     /**
      * Send the inventory to the player
      *
-     * @param p
+     * @param p The player to whom to send the inventory
      */
     public void send(Player p) {
         // If the player has not already attempted the captcha, add them to the list
@@ -177,8 +178,8 @@ public class CaptchaGUI implements Listener {
     /**
      * Add a border to the inventory (Around the top row, bottom row and sides)
      *
-     * @param inv
-     * @return
+     * @param inv The inventory to which to add a border
+     * @return The inventory with an added border
      */
     private Inventory addBorder(Inventory inv) {
         for (int i = 0; i <= 9; i++) {
@@ -193,9 +194,9 @@ public class CaptchaGUI implements Listener {
     }
 
     /**
-     * Ensure it runs as LOWEST so that it is not overrided by another plugin so they can not talk
+     * Ensure it runs as LOWEST so that it is not overridden by another plugin so they can not talk
      *
-     * @param e
+     * @param e An {@link AsyncPlayerChatEvent}
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void chat(AsyncPlayerChatEvent e) {
@@ -237,8 +238,8 @@ public class CaptchaGUI implements Listener {
     /**
      * Check whether a player is verified or not
      *
-     * @param pl
-     * @return
+     * @param pl The player of whom to check verification
+     * @return Whether the player is verified
      */
     public boolean playerVerified(Player pl) {
         return plugin.getConfig().getStringList("Verified-Players").contains(pl.getUniqueId().toString());
@@ -247,7 +248,7 @@ public class CaptchaGUI implements Listener {
     /**
      * Listen for click events
      *
-     * @param e
+     * @param e An {@link InventoryClickEvent}
      */
     @EventHandler
     public void click(InventoryClickEvent e) {
@@ -286,7 +287,7 @@ public class CaptchaGUI implements Listener {
     /**
      * The border glass for the GUI, this has no name
      *
-     * @return
+     * @return A border glass item
      */
     private ItemStack emptyGlass() {
         ItemStack is = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
@@ -321,8 +322,8 @@ public class CaptchaGUI implements Listener {
     /**
      * Format a material down into a coloured, easily readable string
      *
-     * @param mat
-     * @return
+     * @param mat The material to format
+     * @return The formatted string from the material
      */
     private String formatItemName(Material mat) {
         String name = mat.toString().replaceAll("_STAINED_GLASS_PANE", "");
@@ -336,9 +337,9 @@ public class CaptchaGUI implements Listener {
     /**
      * Add a colour to a string based on its material
      *
-     * @param s
-     * @param m
-     * @return
+     * @param s The string to colour
+     * @param m The material of the string
+     * @return The coloured string
      */
     private String applyColour(String s, Material m) {
         if (m.equals(Material.WHITE_STAINED_GLASS_PANE)) {

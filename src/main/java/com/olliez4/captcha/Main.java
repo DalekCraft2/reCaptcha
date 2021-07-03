@@ -64,8 +64,8 @@ public class Main extends JavaPlugin implements Listener {
     /**
      * Check if the player is verified or not
      *
-     * @param pl
-     * @return
+     * @param pl The player of whom to check verification
+     * @return Whether the player is verified
      */
     public boolean playerVerified(Player pl) {
         return getConfig().getStringList("Verified-Players").contains(pl.getUniqueId().toString());

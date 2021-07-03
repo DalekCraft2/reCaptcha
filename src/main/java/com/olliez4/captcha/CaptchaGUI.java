@@ -17,10 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class CaptchaGUI implements Listener {
 
@@ -97,7 +94,7 @@ public class CaptchaGUI implements Listener {
             // Close the GUI
             pl.closeInventory();
             // Send the message to them to say they have passed the captcha
-            pl.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("pass-message")));
+            pl.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.getConfig().getString("pass-message"))));
             // Get the list of verified players from the config.yml
             List<String> s = plugin.getConfig().getStringList("Verified-Players");
             // Add the player to the list
@@ -147,6 +144,7 @@ public class CaptchaGUI implements Listener {
             ItemStack actualItem = new ItemStack(colours.get(toAdd));
             ItemMeta im = actualItem.getItemMeta();
             // This is to prevent items stacking (EG two types of the same glass)
+            assert im != null;
             im.setCustomModelData(item);
             im.setDisplayName(formatItemName(actualItem.getType()));
             actualItem.setItemMeta(im);
@@ -166,6 +164,7 @@ public class CaptchaGUI implements Listener {
         // Format the correct item
         ItemStack is = new ItemStack(mat);
         ItemMeta im = is.getItemMeta();
+        assert im != null;
         im.setDisplayName(formatItemName(mat));
         is.setItemMeta(im);
 
@@ -205,7 +204,7 @@ public class CaptchaGUI implements Listener {
             if (!verified.contains(e.getPlayer())) {
                 // Warn the player
                 e.getPlayer().sendMessage(
-                        ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("can-not-talk")));
+                        ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.getConfig().getString("can-not-talk"))));
                 // Cancel the message
                 e.setCancelled(true);
             }
@@ -260,6 +259,7 @@ public class CaptchaGUI implements Listener {
             // Proceed if the inventory title is correct
             if (view.getTitle().contains(title)) {
                 // Strip down the title to a material and compare to the clicked item's material
+                assert is != null;
                 if (is.getType().equals(
                         Material.getMaterial(view.getTitle().replaceAll(title, "").replaceAll(" ", "_").toUpperCase()
                                 + "_STAINED_GLASS_PANE"))) {
@@ -269,7 +269,7 @@ public class CaptchaGUI implements Listener {
                     // Kick the player, they have failed the captcha
                     Player p = (Player) e.getWhoClicked();
                     p.kickPlayer(ChatColor.translateAlternateColorCodes('&',
-                            plugin.getConfig().getString("captcha-failed-message").replaceAll("%amount%",
+                            Objects.requireNonNull(plugin.getConfig().getString("captcha-failed-message")).replaceAll("%amount%",
                                     "" + plugin.getConfig().getInt("Failure-Ban-Times"))));
                     // Alert staff
                     alertOp(p, "", false);
@@ -291,6 +291,7 @@ public class CaptchaGUI implements Listener {
     private ItemStack emptyGlass() {
         ItemStack is = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta im = is.getItemMeta();
+        assert im != null;
         im.setDisplayName(" ");
         is.setItemMeta(im);
         return is;

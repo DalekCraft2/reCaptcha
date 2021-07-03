@@ -10,6 +10,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Objects;
+
 public class Main extends JavaPlugin implements Listener {
 
     public static String format;
@@ -43,7 +45,7 @@ public class Main extends JavaPlugin implements Listener {
     public void join(PlayerJoinEvent e) {
         // If the player is verified, ignore them
         if (!playerVerified(e.getPlayer())) {
-            format = e.getJoinMessage().replace(e.getPlayer().getName(), "NAME");
+            format = Objects.requireNonNull(e.getJoinMessage()).replace(e.getPlayer().getName(), "NAME");
             e.setJoinMessage("");
             // Wait "wait-time" ticks before sending the GUI so they do not instantly close
             // it

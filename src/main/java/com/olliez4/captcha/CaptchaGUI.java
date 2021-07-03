@@ -36,7 +36,7 @@ public class CaptchaGUI implements Listener {
     /**
      * A store of the verified players. This will contain players who have verified recently
      */
-    ArrayList<Player> verified = new ArrayList<Player>();
+    ArrayList<Player> verified = new ArrayList<>();
 
     /**
      * The title of the GUI
@@ -46,12 +46,12 @@ public class CaptchaGUI implements Listener {
     /**
      * The amount of times each user has passed a captcha
      */
-    HashMap<Player, Integer> amountPassed = new HashMap<Player, Integer>();
+    HashMap<Player, Integer> amountPassed = new HashMap<>();
 
     /**
      * The colours to display within the GUI
      */
-    ArrayList<Material> colours = new ArrayList<Material>();
+    ArrayList<Material> colours = new ArrayList<>();
 
     /**
      * Instantiate the class

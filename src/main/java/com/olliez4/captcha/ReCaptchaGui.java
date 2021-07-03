@@ -296,7 +296,7 @@ public class ReCaptchaGui implements Listener {
         ItemStack itemStack = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta itemMeta = itemStack.getItemMeta();
         assert itemMeta != null;
-        itemMeta.setDisplayName(" ");
+        itemMeta.setDisplayName("");
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }

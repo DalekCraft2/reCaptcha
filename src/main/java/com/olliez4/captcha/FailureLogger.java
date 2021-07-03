@@ -23,8 +23,7 @@ public class FailureLogger {
                     // Manage the commands ran to ban people if their failure count is too high
                     if ((failures.size() % plugin.getConfig().getInt("Failure-Ban-Times")) == 0) {
                         // Ban the user, not just kick them
-                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
-                                Objects.requireNonNull(plugin.getConfig().getString("Ban-Command")).replaceAll("%player%", player.getName()));
+                        plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Objects.requireNonNull(plugin.getConfig().getString("Ban-Command")).replaceAll("%player%", player.getName()));
                         // Add the ban to the log
                         text = text + " - Ban issued (exceeded maximum failure count)";
                     }
@@ -41,6 +40,10 @@ public class FailureLogger {
 
     /**
      * Get the amount of times a player has failed the captcha
+     *
+     * @param plugin
+     * @param player
+     * @return
      */
     public static int getFailures(JavaPlugin plugin, Player player) {
         // The placeholder
@@ -56,6 +59,8 @@ public class FailureLogger {
 
     /**
      * Get the time as a formatted date
+     *
+     * @return
      */
     private String getTime() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");

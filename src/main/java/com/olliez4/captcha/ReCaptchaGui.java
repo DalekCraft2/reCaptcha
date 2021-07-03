@@ -19,7 +19,7 @@ import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
 
-public class CaptchaGUI implements Listener {
+public class ReCaptchaGui implements Listener {
 
     /**
      * An instance of the main class
@@ -28,7 +28,7 @@ public class CaptchaGUI implements Listener {
     /**
      * An instance of the random class
      */
-    Random r;
+    Random random;
 
     /**
      * A store of the verified players. This will contain players who have verified recently
@@ -51,15 +51,16 @@ public class CaptchaGUI implements Listener {
     ArrayList<Material> colours = new ArrayList<>();
 
     // TODO Figure out how to describe the plugin parameter
+
     /**
      * Instantiate the class
      *
      * @param plugin
      */
-    public CaptchaGUI(JavaPlugin plugin) {
+    public ReCaptchaGui(JavaPlugin plugin) {
         // Initialise the classes
         this.plugin = plugin;
-        r = new Random();
+        random = new Random();
         // If there is no colours in the list, add them
         if (colours.isEmpty()) {
             colours.add(Material.WHITE_STAINED_GLASS_PANE);
@@ -81,81 +82,81 @@ public class CaptchaGUI implements Listener {
     /**
      * Method to verify a player
      *
-     * @param pl The player to verify
+     * @param player The player to verify
      */
-    public void verifyPlayer(Player pl) {
+    public void verifyPlayer(Player player) {
         // Add one to the amount of times a player has passed the captcha
-        amountPassed.put(pl, amountPassed.get(pl) + 1);
+        amountPassed.put(player, amountPassed.get(player) + 1);
         // If the user hasn't passed the right amount of times, present the GUI again
-        if (amountPassed.get(pl) < plugin.getConfig().getInt("captcha-times")) {
-            send(pl);
+        if (amountPassed.get(player) < plugin.getConfig().getInt("captcha-times")) {
+            send(player);
         } else {
             // Remove them from the amount of times they have passed so we clear up memory
-            amountPassed.remove(pl);
+            amountPassed.remove(player);
             // Close the GUI
-            pl.closeInventory();
+            player.closeInventory();
             // Send the message to them to say they have passed the captcha
-            pl.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.getConfig().getString("pass-message"))));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.getConfig().getString("pass-message"))));
             // Get the list of verified players from the config.yml
-            List<String> s = plugin.getConfig().getStringList("Verified-Players");
+            List<String> stringList = plugin.getConfig().getStringList("Verified-Players");
             // Add the player to the list
-            s.add(pl.getUniqueId().toString());
+            stringList.add(player.getUniqueId().toString());
             // Save the list back to the config.yml
-            plugin.getConfig().set("Verified-Players", s);
+            plugin.getConfig().set("Verified-Players", stringList);
             // Save the config.yml
             plugin.saveConfig();
             // Add the player to the list of verified users
-            verified.add(pl);
+            verified.add(player);
             // Alert staff they pass
-            alertOp(pl, "", true);
+            alertOp(player, "", true);
             // Send the join message
-            Bukkit.broadcastMessage(Main.format.replaceAll("NAME", pl.getName()));
+            Bukkit.broadcastMessage(ReCaptchaPlugin.format.replaceAll("NAME", player.getName()));
             // Reset their walk speed
-            for (PotionEffect pe : pl.getActivePotionEffects()) {
-                pl.removePotionEffect(pe.getType());
+            for (PotionEffect potionEffect : player.getActivePotionEffects()) {
+                player.removePotionEffect(potionEffect.getType());
             }
             // Remove their god mode
-            pl.setInvulnerable(false);
+            player.setInvulnerable(false);
         }
     }
 
     /**
      * Send the inventory to the player
      *
-     * @param p The player to whom to send the inventory
+     * @param player The player to whom to send the inventory
      */
-    public void send(Player p) {
+    public void send(Player player) {
         // If the player has not already attempted the captcha, add them to the list
         // with
         // 0 attempts
-        if (!amountPassed.containsKey(p)) {
-            amountPassed.put(p, 0);
+        if (!amountPassed.containsKey(player)) {
+            amountPassed.put(player, 0);
         }
         // Get a random colour for the captcha
-        int index = r.nextInt(colours.size());
-        Material mat = colours.get(index);
+        int index = random.nextInt(colours.size());
+        Material material = colours.get(index);
         // Strip the material down to a string (EG: Material.RED_STAINED_GLASS_PANE to
         // "red")
-        String name = mat.toString().replaceAll("_STAINED_GLASS_PANE", "").replaceAll("_", " ").toLowerCase();
+        String name = material.toString().replaceAll("_STAINED_GLASS_PANE", "").replaceAll("_", " ").toLowerCase();
         // Create the inventory with 4 rows (36 slots) and format the title
-        Inventory inv = addBorder(Bukkit.getServer().createInventory(null, 36, title + name));
+        Inventory inventory = addBorder(Bukkit.getServer().createInventory(null, 36, title + name));
         // Add random colours to the GUI from the colours list
         for (int item = 0; item <= 13; item++) {
-            int toAdd = r.nextInt(colours.size());
-            ItemStack actualItem = new ItemStack(colours.get(toAdd));
-            ItemMeta im = actualItem.getItemMeta();
+            int toAdd = random.nextInt(colours.size());
+            ItemStack itemStack = new ItemStack(colours.get(toAdd));
+            ItemMeta itemMeta = itemStack.getItemMeta();
             // This is to prevent items stacking (EG two types of the same glass)
-            assert im != null;
-            im.setCustomModelData(item);
-            im.setDisplayName(formatItemName(actualItem.getType()));
-            actualItem.setItemMeta(im);
-            inv.addItem(actualItem);
+            assert itemMeta != null;
+            itemMeta.setCustomModelData(item);
+            itemMeta.setDisplayName(formatItemName(itemStack.getType()));
+            itemStack.setItemMeta(itemMeta);
+            inventory.addItem(itemStack);
         }
         // Pick a random integer (0-6)
-        int slot = r.nextInt(6);
+        int slot = random.nextInt(6);
         // The slot relative to the inventory which we will add the new item
         int realSlot;
-        if (r.nextBoolean()) {
+        if (random.nextBoolean()) {
             // Top row selected
             realSlot = 10 + slot;
         } else {
@@ -163,69 +164,69 @@ public class CaptchaGUI implements Listener {
             realSlot = 19 + slot;
         }
         // Format the correct item
-        ItemStack is = new ItemStack(mat);
-        ItemMeta im = is.getItemMeta();
-        assert im != null;
-        im.setDisplayName(formatItemName(mat));
-        is.setItemMeta(im);
+        ItemStack itemStack = new ItemStack(material);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        assert itemMeta != null;
+        itemMeta.setDisplayName(formatItemName(material));
+        itemStack.setItemMeta(itemMeta);
 
         // Put the item in the inventory to ensure it is always solvable
-        inv.setItem(realSlot, is);
+        inventory.setItem(realSlot, itemStack);
         // Open the inventory
-        p.openInventory(inv);
+        player.openInventory(inventory);
     }
 
     /**
      * Add a border to the inventory (Around the top row, bottom row and sides)
      *
-     * @param inv The inventory to which to add a border
+     * @param inventory The inventory to which to add a border
      * @return The inventory with an added border
      */
-    private Inventory addBorder(Inventory inv) {
+    private Inventory addBorder(Inventory inventory) {
         for (int i = 0; i <= 9; i++) {
-            inv.setItem(i, emptyGlass());
+            inventory.setItem(i, emptyGlass());
         }
-        inv.setItem(17, emptyGlass());
-        inv.setItem(18, emptyGlass());
+        inventory.setItem(17, emptyGlass());
+        inventory.setItem(18, emptyGlass());
         for (int i = 26; i <= 35; i++) {
-            inv.setItem(i, emptyGlass());
+            inventory.setItem(i, emptyGlass());
         }
-        return inv;
+        return inventory;
     }
 
     /**
      * Ensure it runs as LOWEST so that it is not overridden by another plugin so they can not talk
      *
-     * @param e An {@link AsyncPlayerChatEvent}
+     * @param asyncPlayerChatEvent An {@link AsyncPlayerChatEvent}
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void chat(AsyncPlayerChatEvent e) {
+    public void chat(AsyncPlayerChatEvent asyncPlayerChatEvent) {
         // If the player is not verified either in memory or the config.yml
-        if (!playerVerified(e.getPlayer())) {
-            if (!verified.contains(e.getPlayer())) {
+        if (!isPlayerVerified(asyncPlayerChatEvent.getPlayer())) {
+            if (!verified.contains(asyncPlayerChatEvent.getPlayer())) {
                 // Warn the player
-                e.getPlayer().sendMessage(
+                asyncPlayerChatEvent.getPlayer().sendMessage(
                         ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plugin.getConfig().getString("can-not-talk"))));
                 // Cancel the message
-                e.setCancelled(true);
+                asyncPlayerChatEvent.setCancelled(true);
             }
         }
     }
 
     @EventHandler
-    public void close(InventoryCloseEvent e) {
-        Player p = (Player) e.getPlayer();
+    public void close(InventoryCloseEvent inventoryCloseEvent) {
+        Player player = (Player) inventoryCloseEvent.getPlayer();
         // Add a scheduler so that the GUI does not glitch
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             // If the player is not verified at all
-            if (!verified.contains(p)) {
-                if (!playerVerified(p)) {
+            if (!verified.contains(player)) {
+                if (!isPlayerVerified(player)) {
                     try {
                         // If the dismissed inventory is the captcha inventory, the player
-                        if (p.getOpenInventory() != null) {
-                            if (!p.getOpenInventory().getTitle().contains(title)) {
+                        if (player.getOpenInventory() != null) {
+                            if (!player.getOpenInventory().getTitle().contains(title)) {
                                 // Prevent double logging
-                                send(p);
+                                send(player);
                             }
                         }
                     } catch (Exception ignored) {
@@ -238,49 +239,51 @@ public class CaptchaGUI implements Listener {
     /**
      * Check whether a player is verified or not
      *
-     * @param pl The player of whom to check verification
+     * @param player The player of whom to check verification
      * @return Whether the player is verified
      */
-    public boolean playerVerified(Player pl) {
-        return plugin.getConfig().getStringList("Verified-Players").contains(pl.getUniqueId().toString());
+    public boolean isPlayerVerified(Player player) {
+        return plugin.getConfig().getStringList("Verified-Players").contains(player.getUniqueId().toString());
     }
 
     /**
      * Listen for click events
      *
-     * @param e An {@link InventoryClickEvent}
+     * @param inventoryClickEvent An {@link InventoryClickEvent}
      */
     @EventHandler
-    public void click(InventoryClickEvent e) {
+    public void click(InventoryClickEvent inventoryClickEvent) {
         try {
             // Get the item they click
-            ItemStack is = e.getCurrentItem();
+            ItemStack currentItem = inventoryClickEvent.getCurrentItem();
             // Get their view of the inventory
-            InventoryView view = e.getView();
+            InventoryView inventoryView = inventoryClickEvent.getView();
             // Proceed if the inventory title is correct
-            if (view.getTitle().contains(title)) {
+            if (inventoryView.getTitle().contains(title)) {
                 // Strip down the title to a material and compare to the clicked item's material
-                assert is != null;
-                if (is.getType().equals(
-                        Material.getMaterial(view.getTitle().replaceAll(title, "").replaceAll(" ", "_").toUpperCase()
+                assert currentItem != null;
+                if (currentItem.getType().equals(
+                        Material.getMaterial(inventoryView.getTitle().replaceAll(title, "").replaceAll(" ", "_").toUpperCase()
                                 + "_STAINED_GLASS_PANE"))) {
                     // Verify the player as they have clicked the correct item
-                    verifyPlayer((Player) e.getWhoClicked());
+                    verifyPlayer((Player) inventoryClickEvent.getWhoClicked());
                 } else {
                     // Kick the player, they have failed the captcha
-                    Player p = (Player) e.getWhoClicked();
-                    p.kickPlayer(ChatColor.translateAlternateColorCodes('&',
+                    Player whoClicked = (Player) inventoryClickEvent.getWhoClicked();
+                    whoClicked.kickPlayer(ChatColor.translateAlternateColorCodes('&',
                             Objects.requireNonNull(plugin.getConfig().getString("captcha-failed-message")).replaceAll("%amount%",
                                     "" + plugin.getConfig().getInt("Failure-Ban-Times"))));
                     // Alert staff
-                    alertOp(p, "", false);
+                    alertOp(whoClicked, "", false);
                     // Log that they have failed with a reason
-                    new FailLogger(plugin, p, "Failed Captcha");
+                    new FailureLogger(plugin, whoClicked, "Failed Captcha");
                 }
                 // Cancel the click so they can't take or drop items
-                e.setCancelled(true);
+                inventoryClickEvent.setCancelled(true);
             }
-        } catch (Exception e2) { // If they click outside the GUI, supress the error
+        }
+        // If they click outside the GUI, suppress the error
+        catch (Exception ignored) {
         }
     }
 
@@ -290,31 +293,31 @@ public class CaptchaGUI implements Listener {
      * @return A border glass item
      */
     private ItemStack emptyGlass() {
-        ItemStack is = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta im = is.getItemMeta();
-        assert im != null;
-        im.setDisplayName(" ");
-        is.setItemMeta(im);
-        return is;
+        ItemStack itemStack = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        assert itemMeta != null;
+        itemMeta.setDisplayName(" ");
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
     }
 
-    private void alertOp(Player p, String reason, boolean pass) {
+    private void alertOp(Player player, String reason, boolean pass) {
         if (!pass) {
             if (!reason.equals("")) {
                 for (Player op : Bukkit.getOnlinePlayers()) {
                     if (op.isOp() || op.hasPermission("captcha.viewalert"))
-                        op.sendMessage(ChatColor.RED + p.getName() + " has failed the captcha for " + reason);
+                        op.sendMessage(ChatColor.RED + player.getName() + " has failed the captcha for " + reason);
                 }
             } else {
                 for (Player op : Bukkit.getOnlinePlayers()) {
                     if (op.isOp() || op.hasPermission("captcha.viewalert"))
-                        op.sendMessage(ChatColor.RED + p.getName() + " has failed the captcha");
+                        op.sendMessage(ChatColor.RED + player.getName() + " has failed the captcha");
                 }
             }
         } else {
             for (Player op : Bukkit.getOnlinePlayers()) {
                 if (op.isOp() || op.hasPermission("captcha.viewalert"))
-                    op.sendMessage(ChatColor.GREEN + p.getName() + " has passed the captcha");
+                    op.sendMessage(ChatColor.GREEN + player.getName() + " has passed the captcha");
             }
         }
     }
@@ -322,54 +325,54 @@ public class CaptchaGUI implements Listener {
     /**
      * Format a material down into a coloured, easily readable string
      *
-     * @param mat The material to format
+     * @param material The material to format
      * @return The formatted string from the material
      */
-    private String formatItemName(Material mat) {
-        String name = mat.toString().replaceAll("_STAINED_GLASS_PANE", "");
+    private String formatItemName(Material material) {
+        String name = material.toString().replaceAll("_STAINED_GLASS_PANE", "");
         StringBuilder formattedName = new StringBuilder();
-        for (String s : name.split("_")) {
-            formattedName.append(s.substring(0, 1).toUpperCase()).append(s.substring(1).toLowerCase()).append(" ");
+        for (String string : name.split("_")) {
+            formattedName.append(string.substring(0, 1).toUpperCase()).append(string.substring(1).toLowerCase()).append(" ");
         }
-        return applyColour(formattedName.toString(), mat);
+        return applyColour(formattedName.toString(), material);
     }
 
     /**
      * Add a colour to a string based on its material
      *
-     * @param s The string to colour
-     * @param m The material of the string
+     * @param string   The string to colour
+     * @param material The material of the string
      * @return The coloured string
      */
-    private String applyColour(String s, Material m) {
-        if (m.equals(Material.WHITE_STAINED_GLASS_PANE)) {
-            s = ChatColor.WHITE + s;
-        } else if (m.equals(Material.ORANGE_STAINED_GLASS_PANE)) {
-            s = ChatColor.GOLD + s;
-        } else if (m.equals(Material.MAGENTA_STAINED_GLASS_PANE)) {
-            s = ChatColor.DARK_PURPLE + s;
-        } else if (m.equals(Material.LIGHT_BLUE_STAINED_GLASS_PANE)) {
-            s = ChatColor.AQUA + s;
-        } else if (m.equals(Material.YELLOW_STAINED_GLASS_PANE)) {
-            s = ChatColor.YELLOW + s;
-        } else if (m.equals(Material.LIME_STAINED_GLASS_PANE)) {
-            s = ChatColor.GREEN + s;
-        } else if (m.equals(Material.PINK_STAINED_GLASS_PANE)) {
-            s = ChatColor.LIGHT_PURPLE + s;
-        } else if (m.equals(Material.CYAN_STAINED_GLASS_PANE)) {
-            s = ChatColor.DARK_AQUA + s;
-        } else if (m.equals(Material.PURPLE_STAINED_GLASS_PANE)) {
-            s = ChatColor.DARK_PURPLE + s;
-        } else if (m.equals(Material.BLUE_STAINED_GLASS_PANE)) {
-            s = ChatColor.DARK_BLUE + s;
-        } else if (m.equals(Material.BROWN_STAINED_GLASS_PANE)) {
-            s = ChatColor.GRAY + s;
-        } else if (m.equals(Material.GREEN_STAINED_GLASS_PANE)) {
-            s = ChatColor.DARK_GREEN + s;
-        } else if (m.equals(Material.RED_STAINED_GLASS_PANE)) {
-            s = ChatColor.DARK_RED + s;
+    private String applyColour(String string, Material material) {
+        if (material.equals(Material.WHITE_STAINED_GLASS_PANE)) {
+            string = ChatColor.WHITE + string;
+        } else if (material.equals(Material.ORANGE_STAINED_GLASS_PANE)) {
+            string = ChatColor.GOLD + string;
+        } else if (material.equals(Material.MAGENTA_STAINED_GLASS_PANE)) {
+            string = ChatColor.DARK_PURPLE + string;
+        } else if (material.equals(Material.LIGHT_BLUE_STAINED_GLASS_PANE)) {
+            string = ChatColor.AQUA + string;
+        } else if (material.equals(Material.YELLOW_STAINED_GLASS_PANE)) {
+            string = ChatColor.YELLOW + string;
+        } else if (material.equals(Material.LIME_STAINED_GLASS_PANE)) {
+            string = ChatColor.GREEN + string;
+        } else if (material.equals(Material.PINK_STAINED_GLASS_PANE)) {
+            string = ChatColor.LIGHT_PURPLE + string;
+        } else if (material.equals(Material.CYAN_STAINED_GLASS_PANE)) {
+            string = ChatColor.DARK_AQUA + string;
+        } else if (material.equals(Material.PURPLE_STAINED_GLASS_PANE)) {
+            string = ChatColor.DARK_PURPLE + string;
+        } else if (material.equals(Material.BLUE_STAINED_GLASS_PANE)) {
+            string = ChatColor.DARK_BLUE + string;
+        } else if (material.equals(Material.BROWN_STAINED_GLASS_PANE)) {
+            string = ChatColor.GRAY + string;
+        } else if (material.equals(Material.GREEN_STAINED_GLASS_PANE)) {
+            string = ChatColor.DARK_GREEN + string;
+        } else if (material.equals(Material.RED_STAINED_GLASS_PANE)) {
+            string = ChatColor.DARK_RED + string;
         }
-        return s;
+        return string;
     }
 
 }

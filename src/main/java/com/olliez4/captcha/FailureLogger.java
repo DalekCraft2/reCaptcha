@@ -8,15 +8,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-public class FailLogger {
+public class FailureLogger {
 
-    public FailLogger(JavaPlugin plugin, Player p, String reason) {
+    public FailureLogger(JavaPlugin plugin, Player player, String reason) {
         // Only log if the logger is enabled
         if (plugin.getConfig().getBoolean("Use-Logging")) {
             // Format the text
-            String text = reason + " - " + p.getUniqueId() + " - " + getTime();
+            String text = reason + " - " + player.getUniqueId() + " - " + getTime();
             // Get their previous failures
-            List<String> failures = plugin.getConfig().getStringList("Failed-Captcha-Attempts." + p.getName());
+            List<String> failures = plugin.getConfig().getStringList("Failed-Captcha-Attempts." + player.getName());
             // Only ban players if the module is enabled
             if (plugin.getConfig().getBoolean("Ban-after-too-many-tries")) {
                 if (failures.size() > 0) {
@@ -24,7 +24,7 @@ public class FailLogger {
                     if ((failures.size() % plugin.getConfig().getInt("Failure-Ban-Times")) == 0) {
                         // Ban the user, not just kick them
                         plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
-                                Objects.requireNonNull(plugin.getConfig().getString("Ban-Command")).replaceAll("%player%", p.getName()));
+                                Objects.requireNonNull(plugin.getConfig().getString("Ban-Command")).replaceAll("%player%", player.getName()));
                         // Add the ban to the log
                         text = text + " - Ban issued (exceeded maximum failure count)";
                     }
@@ -33,7 +33,7 @@ public class FailLogger {
             // Add the new failure to the previous failures
             failures.add(text);
             // Save the captcha failure
-            plugin.getConfig().set("Failed-Captcha-Attempts." + p.getName(), failures);
+            plugin.getConfig().set("Failed-Captcha-Attempts." + player.getName(), failures);
             // Save the config.yml
             plugin.saveConfig();
         }
@@ -42,12 +42,12 @@ public class FailLogger {
     /**
      * Get the amount of times a player has failed the captcha
      */
-    public static int getFailures(JavaPlugin plugin, Player p) {
+    public static int getFailures(JavaPlugin plugin, Player player) {
         // The placeholder
         int times = 0;
         // Iterate through all the times they have failed and add to times every pass
-        for (String s : plugin.getConfig().getStringList("Failed-Captcha-Attempts." + p.getName())) {
-            if (s.contains(p.getUniqueId().toString())) {
+        for (String string : plugin.getConfig().getStringList("Failed-Captcha-Attempts." + player.getName())) {
+            if (string.contains(player.getUniqueId().toString())) {
                 times++;
             }
         }
@@ -58,8 +58,8 @@ public class FailLogger {
      * Get the time as a formatted date
      */
     private String getTime() {
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        return ("[" + format.format(new Date()) + "]");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        return ("[" + simpleDateFormat.format(new Date()) + "]");
     }
 
 }

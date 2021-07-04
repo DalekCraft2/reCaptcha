@@ -30,7 +30,7 @@ public class FailureLogger {
             }
             // Add the new failure to the previous failures
             failures.add(text);
-            // Save the captcha failure
+            // Save the Captcha failure
             plugin.getConfig().set("Failed-Captcha-Attempts." + player.getName(), failures);
             // Save the config.yml
             plugin.saveConfig();
@@ -38,11 +38,11 @@ public class FailureLogger {
     }
 
     /**
-     * Get the amount of times a player has failed the captcha
+     * Get the amount of times a player has failed the Captcha
      *
      * @param plugin
-     * @param player
-     * @return
+     * @param player The player of whom to check the failures
+     * @return The amount of times the player has failed the Captcha
      */
     public static int getFailures(JavaPlugin plugin, Player player) {
         // The placeholder

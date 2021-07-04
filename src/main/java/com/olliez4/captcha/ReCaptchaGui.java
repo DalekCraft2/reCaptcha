@@ -44,7 +44,7 @@ public class ReCaptchaGui implements Listener {
     String title = ChatColor.BLUE.toString() + ChatColor.BOLD + "Please select ";
 
     /**
-     * The amount of times each user has passed a captcha
+     * The amount of times each user has passed a Captcha
      */
     HashMap<Player, Integer> amountPassed = new HashMap<>();
 
@@ -88,7 +88,7 @@ public class ReCaptchaGui implements Listener {
      * @param player The player to verify
      */
     public void verifyPlayer(Player player) {
-        // Add one to the amount of times a player has passed the captcha
+        // Add one to the amount of times a player has passed the Captcha
         amountPassed.put(player, amountPassed.get(player) + 1);
         // If the user hasn't passed the right amount of times, present the GUI again
         if (amountPassed.get(player) < plugin.getConfig().getInt("captcha-times")) {
@@ -98,7 +98,7 @@ public class ReCaptchaGui implements Listener {
             amountPassed.remove(player);
             // Close the GUI
             player.closeInventory();
-            // Send the message to them to say they have passed the captcha
+            // Send the message to them to say they have passed the Captcha
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("pass-message")));
             // Get the list of verified players from the config.yml
             List<String> stringList = plugin.getConfig().getStringList("Verified-Players");
@@ -129,13 +129,13 @@ public class ReCaptchaGui implements Listener {
      * @param player The player to whom to send the inventory
      */
     public void send(Player player) {
-        // If the player has not already attempted the captcha, add them to the list
+        // If the player has not already attempted the Captcha, add them to the list
         // with
         // 0 attempts
         if (!amountPassed.containsKey(player)) {
             amountPassed.put(player, 0);
         }
-        // Get a random colour for the captcha
+        // Get a random colour for the Captcha
         int index = random.nextInt(colours.size());
         Material material = colours.get(index);
         // Strip the material down to a string (EG: Material.RED_STAINED_GLASS_PANE to
@@ -222,7 +222,7 @@ public class ReCaptchaGui implements Listener {
             if (!verified.contains(player)) {
                 if (!isPlayerVerified(player)) {
                     try {
-                        // If the dismissed inventory is the captcha inventory, the player
+                        // If the dismissed inventory is the Captcha inventory, the player
                         if (player.getOpenInventory() != null) {
                             if (!player.getOpenInventory().getTitle().contains(title)) {
                                 // Prevent double logging
@@ -265,7 +265,7 @@ public class ReCaptchaGui implements Listener {
                     // Verify the player as they have clicked the correct item
                     verifyPlayer((Player) inventoryClickEvent.getWhoClicked());
                 } else {
-                    // Kick the player, they have failed the captcha
+                    // Kick the player, they have failed the Captcha
                     Player whoClicked = (Player) inventoryClickEvent.getWhoClicked();
                     whoClicked.kickPlayer(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("captcha-failed-message").replaceAll("%amount%", "" + plugin.getConfig().getInt("Failure-Ban-Times"))));
                     // Alert staff
@@ -300,20 +300,20 @@ public class ReCaptchaGui implements Listener {
             if (!reason.equals("")) {
                 for (Player op : Bukkit.getOnlinePlayers()) {
                     if (op.isOp() || op.hasPermission("captcha.viewalert")) {
-                        op.sendMessage(ChatColor.RED + player.getName() + " has failed the captcha for " + reason);
+                        op.sendMessage(ChatColor.RED + player.getName() + " has failed the Captcha for " + reason);
                     }
                 }
             } else {
                 for (Player op : Bukkit.getOnlinePlayers()) {
                     if (op.isOp() || op.hasPermission("captcha.viewalert")) {
-                        op.sendMessage(ChatColor.RED + player.getName() + " has failed the captcha");
+                        op.sendMessage(ChatColor.RED + player.getName() + " has failed the Captcha");
                     }
                 }
             }
         } else {
             for (Player op : Bukkit.getOnlinePlayers()) {
                 if (op.isOp() || op.hasPermission("captcha.viewalert")) {
-                    op.sendMessage(ChatColor.GREEN + player.getName() + " has passed the captcha");
+                    op.sendMessage(ChatColor.GREEN + player.getName() + " has passed the Captcha");
                 }
             }
         }

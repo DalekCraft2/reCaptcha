@@ -20,7 +20,7 @@ public class ReCaptchaPlugin extends JavaPlugin implements Listener {
     ReCaptchaGui reCaptchaGui;
 
     public void onEnable() {
-        getLogger().info("Thanks for using captcha by OLLIEZ4");
+        getLogger().info("Thanks for using reCaptcha by OLLIEZ4");
         saveDefaultConfig();
         // Initialise the CaptchaGui
         reCaptchaGui = new ReCaptchaGui(this);
@@ -49,9 +49,9 @@ public class ReCaptchaPlugin extends JavaPlugin implements Listener {
             // it
             Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
                 // The player is not verified, alert console to make logs easier and send the
-                // captcha to the player
+                // Captcha to the player
                 Player player = playerJoinEvent.getPlayer();
-                getLogger().info(player.getName() + " has not verified their captcha code before. Sending now.");
+                getLogger().info(player.getName() + " has not verified their Captcha code before. Sending now.");
                 reCaptchaGui.send(player);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10000, 255, true, false, false));
                 player.setInvulnerable(true);

@@ -1,4 +1,4 @@
-package com.olliez4.captcha;
+package com.olliez4.recaptcha;
 
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;

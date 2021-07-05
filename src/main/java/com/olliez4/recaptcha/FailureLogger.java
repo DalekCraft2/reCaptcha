@@ -1,4 +1,4 @@
-package com.olliez4.captcha;
+package com.olliez4.recaptcha;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

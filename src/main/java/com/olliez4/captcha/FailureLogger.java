@@ -59,7 +59,7 @@ public class FailureLogger {
     /**
      * Get the time as a formatted date
      *
-     * @return
+     * @return The time as a formatted date
      */
     private String getTime() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");

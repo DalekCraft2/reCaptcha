@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.olliez4.recaptcha</groupId>
-    <artifactId>reCaptcha</artifactId>
+    <groupId>com.olliez4</groupId>
+    <artifactId>recaptcha</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>reCaptcha</name>
@@ -19,10 +19,12 @@
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
         <java.version>16</java.version>
+        <spigot.version>1.17.1</spigot.version>
+        <spigot.javadocs>https://hub.spigotmc.org/javadocs/spigot/</spigot.javadocs>
     </properties>
     <repositories>
         <repository>
-            <!-- Spigot -->
+            <name>Spigot</name>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
@@ -47,8 +49,8 @@
                 </includes>
             </resource>
         </resources>
-        <finalName>${project.artifactId}-${project.version}</finalName>
-        <defaultGoal>clean package install</defaultGoal>
+        <finalName>${project.name}-${project.version}</finalName>
+        <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
                 <!-- Compile -->
@@ -82,34 +84,40 @@
                 <version>3.3.1-SNAPSHOT</version>
                 <executions>
                     <execution>
-                        <id>javadoc-jar</id>
-                        <phase>verify</phase>
+                        <id>attach-javadocs</id>
                         <goals>
                             <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <links> <!-- References to external Javadocs -->
+                        <!-- Spigot-API -->
+                        <link>${spigot.javadocs}</link>
+                        <!-- Jetbrains Java Annotations -->
+                        <link>https://javadoc.io/doc/org.jetbrains/annotations/latest/</link>
+                    </links>
+                </configuration>
             </plugin>
         </plugins>
     </build>
     <dependencies>
+        <!-- Hard Dependencies -->
+        <dependency>
+            <!-- Spigot-API -->
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${spigot.version}-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Shaded Dependencies
         <dependency>
             <!-- JetBrains Java Annotations -->
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>21.0.1</version>
-            <type>jar</type>
             <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <!-- Spigot-API -->
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.17-R0.1-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>

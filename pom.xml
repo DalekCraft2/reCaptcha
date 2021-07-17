@@ -110,7 +110,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Shaded Dependencies
+        <!-- Shaded Dependencies -->
         <dependency>
             <!-- JetBrains Java Annotations -->
             <groupId>org.jetbrains</groupId>

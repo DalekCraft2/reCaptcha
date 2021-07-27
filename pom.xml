@@ -3,10 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.olliez4</groupId>
     <artifactId>recaptcha</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
+
     <name>reCaptcha</name>
     <description>A simple, non-invasive and easy to use Captcha GUI for Spigot Minecraft servers. Imagined and developed
         by OLLIEZ4 for the sole purpose of not losing players to annoying and repetitive forced GUI's which intrude with
@@ -14,20 +16,51 @@
     </description>
     <url>https://github.com/Z4OLLIEZ4/reCaptcha</url>
     <inceptionYear>2020</inceptionYear>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
         <spigot.version>1.17.1</spigot.version>
-        <spigot.javadocs>https://hub.spigotmc.org/javadocs/spigot/</spigot.javadocs>
     </properties>
+
+    <dependencies>
+        <!-- Hard dependencies -->
+        <dependency>
+            <!-- Spigot-API -->
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${spigot.version}-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Shaded dependencies -->
+        <dependency>
+            <!-- JetBrains Java Annotations -->
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>21.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
     <repositories>
         <repository>
-            <name>Spigot</name>
-            <id>spigot-repo</id>
+            <!-- Spigot-API -->
+            <name>SpigotMC</name>
+            <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
     </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <!-- Apache Maven Javadoc Plugin -->
+            <name>Apache Snapshots</name>
+            <id>apache-snapshots</id>
+            <url>https://repository.apache.org/snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
         <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
         <resources>
@@ -59,7 +92,6 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
             <plugin>
@@ -92,31 +124,50 @@
                 <configuration>
                     <links> <!-- References to external Javadocs -->
                         <!-- Spigot-API -->
-                        <link>${spigot.javadocs}</link>
+                        <link>https://hub.spigotmc.org/javadocs/spigot/</link>
                         <!-- Jetbrains Java Annotations -->
                         <link>https://javadoc.io/doc/org.jetbrains/annotations/latest/</link>
                     </links>
                 </configuration>
             </plugin>
+            <plugin>
+                <!-- Shade dependencies -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.3.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <artifactSet>
+                                <includes>
+                                    <!-- JetBrains Java Annotations -->
+                                    <include>org.jetbrains:annotations</include>
+                                </includes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <!-- JetBrains Java Annotations -->
+                                    <pattern>org.jetbrains.annotations</pattern>
+                                    <shadedPattern>com.olliez4.recaptcha.lib.org.jetbrains.annotations</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-    <dependencies>
-        <!-- Hard Dependencies -->
-        <dependency>
-            <!-- Spigot-API -->
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>${spigot.version}-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Shaded Dependencies -->
-        <dependency>
-            <!-- JetBrains Java Annotations -->
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>21.0.1</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
 </project>

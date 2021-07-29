@@ -41,6 +41,7 @@
             <artifactId>annotations</artifactId>
             <version>21.0.1</version>
             <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
@@ -62,6 +63,8 @@
     </pluginRepositories>
 
     <build>
+        <finalName>${project.name}-${project.version}</finalName>
+        <defaultGoal>clean package</defaultGoal>
         <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
         <resources>
             <resource>
@@ -77,12 +80,10 @@
                 <directory>${project.basedir}/src/main/resources</directory>
                 <filtering>false</filtering>
                 <includes>
-                    <include>*</include>
+                    <include>**/*</include>
                 </includes>
             </resource>
         </resources>
-        <finalName>${project.name}-${project.version}</finalName>
-        <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
                 <!-- Compile -->

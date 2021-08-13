@@ -34,14 +34,13 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Shaded dependencies -->
+        <!-- Development dependencies -->
         <dependency>
             <!-- JetBrains Java Annotations -->
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>21.0.1</version>
-            <scope>compile</scope>
-            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -130,44 +129,6 @@
                         <link>https://javadoc.io/doc/org.jetbrains/annotations/latest/</link>
                     </links>
                 </configuration>
-            </plugin>
-            <plugin>
-                <!-- Shade dependencies -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.0-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <artifactSet>
-                                <includes>
-                                    <!-- JetBrains Java Annotations -->
-                                    <include>org.jetbrains:annotations</include>
-                                </includes>
-                            </artifactSet>
-                            <relocations>
-                                <relocation>
-                                    <!-- JetBrains Java Annotations -->
-                                    <pattern>org.jetbrains.annotations</pattern>
-                                    <shadedPattern>com.olliez4.recaptcha.lib.org.jetbrains.annotations</shadedPattern>
-                                </relocation>
-                            </relocations>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

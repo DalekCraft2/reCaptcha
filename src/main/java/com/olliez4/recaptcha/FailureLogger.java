@@ -1,7 +1,6 @@
 package com.olliez4.recaptcha;
 
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,7 +8,14 @@ import java.util.List;
 
 public class FailureLogger {
 
-    public FailureLogger(JavaPlugin plugin, Player player, String reason) {
+    /**
+     * Logs a {@link Player}'s Captcha failure. Will ban or kick the {@link Player} if they have failed too many times.
+     *
+     * @param plugin the instance of the {@link ReCaptchaPlugin}
+     * @param player the {@link Player} of whom to log the failure
+     * @param reason the reason for the ban or kick
+     */
+    public FailureLogger(ReCaptchaPlugin plugin, Player player, String reason) {
         // Only log if the logger is enabled
         if (plugin.getConfig().getBoolean("Use-Logging")) {
             // Format the text
@@ -38,16 +44,16 @@ public class FailureLogger {
     }
 
     /**
-     * Get the amount of times a player has failed the Captcha
+     * Gets the amount of times a {@link Player} has failed the Captcha.
      *
-     * @param plugin
-     * @param player The player of whom to check the failures
-     * @return The amount of times the player has failed the Captcha
+     * @param plugin the instance of the {@link ReCaptchaPlugin}
+     * @param player the {@link Player} of whom to check the failures
+     * @return the amount of times the {@link Player} has failed the Captcha
      */
-    public static int getFailures(JavaPlugin plugin, Player player) {
+    public static int getFailures(ReCaptchaPlugin plugin, Player player) {
         // The placeholder
         int times = 0;
-        // Iterate through all the times they have failed and add to times every pass
+        // Iterate through all the times they have failed and add to config after every pass
         for (String string : plugin.getConfig().getStringList("Failed-Captcha-Attempts." + player.getName())) {
             if (string.contains(player.getUniqueId().toString())) {
                 times++;
@@ -57,9 +63,9 @@ public class FailureLogger {
     }
 
     /**
-     * Get the time as a formatted date
+     * Gets the time as a formatted date.
      *
-     * @return The time as a formatted date
+     * @return the time as a formatted date
      */
     private String getTime() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");

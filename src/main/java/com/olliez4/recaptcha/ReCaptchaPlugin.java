@@ -15,14 +15,15 @@ public class ReCaptchaPlugin extends JavaPlugin implements Listener {
     public static String format;
 
     /**
-     * An instance of the CaptchaGUI class
+     * An instance of the {@link ReCaptchaGui} class.
      */
     ReCaptchaGui reCaptchaGui;
 
+    @Override
     public void onEnable() {
         getLogger().info("Thanks for using reCaptcha by OLLIEZ4");
         saveDefaultConfig();
-        // Initialise the CaptchaGui
+        // Initialise the ReCaptchaGui
         reCaptchaGui = new ReCaptchaGui(this);
         // Register the join event, chat event, inventory close event, etc...
         getServer().getPluginManager().registerEvents(this, this);
@@ -30,6 +31,11 @@ public class ReCaptchaPlugin extends JavaPlugin implements Listener {
 
     }
 
+    /**
+     * Listens for {@link PlayerQuitEvent PlayerQuitEvents}.
+     *
+     * @param playerQuitEvent a {@link PlayerQuitEvent}
+     */
     @EventHandler
     public void leave(PlayerQuitEvent playerQuitEvent) {
         if (!isPlayerVerified(playerQuitEvent.getPlayer())) {
@@ -39,13 +45,18 @@ public class ReCaptchaPlugin extends JavaPlugin implements Listener {
         }
     }
 
+    /**
+     * Listens for {@link PlayerJoinEvent PlayerJoinEvents}.
+     *
+     * @param playerJoinEvent a {@link PlayerJoinEvent}
+     */
     @EventHandler
     public void join(PlayerJoinEvent playerJoinEvent) {
         // If the player is verified, ignore them
         if (!isPlayerVerified(playerJoinEvent.getPlayer())) {
             format = playerJoinEvent.getJoinMessage().replace(playerJoinEvent.getPlayer().getName(), "NAME");
             playerJoinEvent.setJoinMessage("");
-            // Wait "wait-time" ticks before sending the GUI so they do not instantly close
+            // Wait "wait-time" ticks before sending the GUI, so they do not instantly close
             // it
             Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
                 // The player is not verified, alert console to make logs easier and send the
@@ -60,10 +71,10 @@ public class ReCaptchaPlugin extends JavaPlugin implements Listener {
     }
 
     /**
-     * Check if the player is verified or not
+     * Checks whether a {@link Player} is verified.
      *
-     * @param player The player of whom to check verification
-     * @return Whether the player is verified
+     * @param player the {@link Player} of whom to check verification
+     * @return {@code true} if the {@link Player} is verified
      */
     public boolean isPlayerVerified(Player player) {
         return getConfig().getStringList("Verified-Players").contains(player.getUniqueId().toString());

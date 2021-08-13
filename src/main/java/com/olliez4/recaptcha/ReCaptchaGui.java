@@ -14,7 +14,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
@@ -25,42 +24,40 @@ import java.util.Random;
 public class ReCaptchaGui implements Listener {
 
     /**
-     * An instance of the main class
+     * An instance of the {@link ReCaptchaPlugin}.
      */
-    JavaPlugin plugin;
+    ReCaptchaPlugin plugin;
     /**
-     * An instance of the random class
+     * An instance of the {@link Random} class.
      */
     Random random;
 
     /**
-     * A store of the verified players. This will contain players who have verified recently
+     * A list of recently verified {@link Player}.
      */
     ArrayList<Player> verified = new ArrayList<>();
 
     /**
-     * The title of the GUI
+     * The title of the GUI.
      */
     String title = ChatColor.BLUE.toString() + ChatColor.BOLD + "Please select ";
 
     /**
-     * The amount of times each user has passed a Captcha
+     * The amount of times each {@link Player} has passed a Captcha.
      */
     HashMap<Player, Integer> amountPassed = new HashMap<>();
 
     /**
-     * The colours to display within the GUI
+     * The colours to display within the GUI.
      */
     ArrayList<Material> colours = new ArrayList<>();
 
-    // TODO Figure out how to describe the plugin parameter
-
     /**
-     * Instantiate the class
+     * Constructor.
      *
-     * @param plugin
+     * @param plugin the instance of the {@link ReCaptchaPlugin}
      */
-    public ReCaptchaGui(JavaPlugin plugin) {
+    public ReCaptchaGui(ReCaptchaPlugin plugin) {
         // Initialise the classes
         this.plugin = plugin;
         random = new Random();
@@ -83,9 +80,9 @@ public class ReCaptchaGui implements Listener {
     }
 
     /**
-     * Method to verify a player
+     * Verifies a {@link Player}.
      *
-     * @param player The player to verify
+     * @param player the {@link Player} to verify
      */
     public void verifyPlayer(Player player) {
         // Add one to the amount of times a player has passed the Captcha
@@ -94,7 +91,7 @@ public class ReCaptchaGui implements Listener {
         if (amountPassed.get(player) < plugin.getConfig().getInt("captcha-times")) {
             send(player);
         } else {
-            // Remove them from the amount of times they have passed so we clear up memory
+            // Remove them from the amount of times they have passed, so we clear up memory
             amountPassed.remove(player);
             // Close the GUI
             player.closeInventory();
@@ -124,14 +121,12 @@ public class ReCaptchaGui implements Listener {
     }
 
     /**
-     * Send the inventory to the player
+     * Sends the Captcha {@link Inventory} to a {@link Player}.
      *
-     * @param player The player to whom to send the inventory
+     * @param player the {@link Player} to whom to send the {@link Inventory}
      */
     public void send(Player player) {
-        // If the player has not already attempted the Captcha, add them to the list
-        // with
-        // 0 attempts
+        // If the player has not already attempted the Captcha, add them to the list with 0 attempts
         if (!amountPassed.containsKey(player)) {
             amountPassed.put(player, 0);
         }
@@ -178,10 +173,10 @@ public class ReCaptchaGui implements Listener {
     }
 
     /**
-     * Add a border to the inventory (Around the top row, bottom row and sides)
+     * Adds a border to an {@link Inventory} around the top row, bottom row, and sides.
      *
-     * @param inventory The inventory to which to add a border
-     * @return The inventory with an added border
+     * @param inventory the {@link Inventory} to which to add a border
+     * @return the {@link Inventory} with an added border
      */
     private Inventory addBorder(Inventory inventory) {
         for (int i = 0; i <= 9; i++) {
@@ -196,12 +191,13 @@ public class ReCaptchaGui implements Listener {
     }
 
     /**
-     * Ensure it runs as LOWEST so that it is not overridden by another plugin so they can not talk
+     * Listens for {@link AsyncPlayerChatEvent AsyncPlayerChatEvents}.
      *
-     * @param asyncPlayerChatEvent An {@link AsyncPlayerChatEvent}
+     * @param asyncPlayerChatEvent an {@link AsyncPlayerChatEvent}
      */
+    // Ensure it runs as LOWEST so that it is not overridden by another plugin, so they can not talk
     @EventHandler(priority = EventPriority.LOWEST)
-    public void chat(AsyncPlayerChatEvent asyncPlayerChatEvent) {
+    public void onChat(AsyncPlayerChatEvent asyncPlayerChatEvent) {
         // If the player is not verified either in memory or the config.yml
         if (!isPlayerVerified(asyncPlayerChatEvent.getPlayer())) {
             if (!verified.contains(asyncPlayerChatEvent.getPlayer())) {
@@ -213,8 +209,13 @@ public class ReCaptchaGui implements Listener {
         }
     }
 
+    /**
+     * Listens for {@link InventoryCloseEvent InventoryCloseEvents}.
+     *
+     * @param inventoryCloseEvent an {@link InventoryCloseEvent}
+     */
     @EventHandler
-    public void close(InventoryCloseEvent inventoryCloseEvent) {
+    public void onClose(InventoryCloseEvent inventoryCloseEvent) {
         Player player = (Player) inventoryCloseEvent.getPlayer();
         // Add a scheduler so that the GUI does not glitch
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
@@ -237,22 +238,22 @@ public class ReCaptchaGui implements Listener {
     }
 
     /**
-     * Check whether a player is verified or not
+     * Checks whether a {@link Player} is verified.
      *
-     * @param player The player of whom to check verification
-     * @return Whether the player is verified
+     * @param player the {@link Player} of whom to check verification
+     * @return {@code true} if the {@link Player} is verified
      */
     public boolean isPlayerVerified(Player player) {
         return plugin.getConfig().getStringList("Verified-Players").contains(player.getUniqueId().toString());
     }
 
     /**
-     * Listen for click events
+     * Listens for {@link InventoryClickEvent InventoryClickEvents}.
      *
-     * @param inventoryClickEvent An {@link InventoryClickEvent}
+     * @param inventoryClickEvent an {@link InventoryClickEvent}
      */
     @EventHandler
-    public void click(InventoryClickEvent inventoryClickEvent) {
+    public void onClick(InventoryClickEvent inventoryClickEvent) {
         try {
             // Get the item they click
             ItemStack currentItem = inventoryClickEvent.getCurrentItem();
@@ -273,7 +274,7 @@ public class ReCaptchaGui implements Listener {
                     // Log that they have failed with a reason
                     new FailureLogger(plugin, whoClicked, "Failed Captcha");
                 }
-                // Cancel the click so they can't take or drop items
+                // Cancel the click, so they can't take or drop items
                 inventoryClickEvent.setCancelled(true);
             }
         }
@@ -283,9 +284,9 @@ public class ReCaptchaGui implements Listener {
     }
 
     /**
-     * The border glass for the GUI, this has no name
+     * The border glass for the GUI; this has no name.
      *
-     * @return A border glass item
+     * @return a border glass {@link ItemStack}
      */
     private ItemStack emptyGlass() {
         ItemStack itemStack = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
@@ -320,10 +321,10 @@ public class ReCaptchaGui implements Listener {
     }
 
     /**
-     * Format a material down into a coloured, easily readable string
+     * Formats a {@link Material} down into a coloured, easily readable {@link String}.
      *
-     * @param material The material to format
-     * @return The formatted string from the material
+     * @param material the {@link Material} to format
+     * @return a formatted {@link String} from the {@link Material}
      */
     private String formatItemName(Material material) {
         String name = material.toString().replaceAll("_STAINED_GLASS_PANE", "");
@@ -335,39 +336,26 @@ public class ReCaptchaGui implements Listener {
     }
 
     /**
-     * Add a colour to a string based on its material
+     * Adds a colour to a {@link String} based on its {@link Material}.
      *
-     * @param string   The string to colour
-     * @param material The material of the string
-     * @return The coloured string
+     * @param string   the {@link String} to colour
+     * @param material the {@link Material} of the {@link String}
+     * @return the coloured {@link String}
      */
     private String applyColour(String string, Material material) {
-        if (material.equals(Material.WHITE_STAINED_GLASS_PANE)) {
-            string = ChatColor.WHITE + string;
-        } else if (material.equals(Material.ORANGE_STAINED_GLASS_PANE)) {
-            string = ChatColor.GOLD + string;
-        } else if (material.equals(Material.MAGENTA_STAINED_GLASS_PANE)) {
-            string = ChatColor.DARK_PURPLE + string;
-        } else if (material.equals(Material.LIGHT_BLUE_STAINED_GLASS_PANE)) {
-            string = ChatColor.AQUA + string;
-        } else if (material.equals(Material.YELLOW_STAINED_GLASS_PANE)) {
-            string = ChatColor.YELLOW + string;
-        } else if (material.equals(Material.LIME_STAINED_GLASS_PANE)) {
-            string = ChatColor.GREEN + string;
-        } else if (material.equals(Material.PINK_STAINED_GLASS_PANE)) {
-            string = ChatColor.LIGHT_PURPLE + string;
-        } else if (material.equals(Material.CYAN_STAINED_GLASS_PANE)) {
-            string = ChatColor.DARK_AQUA + string;
-        } else if (material.equals(Material.PURPLE_STAINED_GLASS_PANE)) {
-            string = ChatColor.DARK_PURPLE + string;
-        } else if (material.equals(Material.BLUE_STAINED_GLASS_PANE)) {
-            string = ChatColor.DARK_BLUE + string;
-        } else if (material.equals(Material.BROWN_STAINED_GLASS_PANE)) {
-            string = ChatColor.GRAY + string;
-        } else if (material.equals(Material.GREEN_STAINED_GLASS_PANE)) {
-            string = ChatColor.DARK_GREEN + string;
-        } else if (material.equals(Material.RED_STAINED_GLASS_PANE)) {
-            string = ChatColor.DARK_RED + string;
+        switch (material) {
+            case WHITE_STAINED_GLASS_PANE -> string = ChatColor.WHITE + string;
+            case ORANGE_STAINED_GLASS_PANE -> string = ChatColor.GOLD + string;
+            case MAGENTA_STAINED_GLASS_PANE, PURPLE_STAINED_GLASS_PANE -> string = ChatColor.DARK_PURPLE + string;
+            case LIGHT_BLUE_STAINED_GLASS_PANE -> string = ChatColor.AQUA + string;
+            case YELLOW_STAINED_GLASS_PANE -> string = ChatColor.YELLOW + string;
+            case LIME_STAINED_GLASS_PANE -> string = ChatColor.GREEN + string;
+            case PINK_STAINED_GLASS_PANE -> string = ChatColor.LIGHT_PURPLE + string;
+            case CYAN_STAINED_GLASS_PANE -> string = ChatColor.DARK_AQUA + string;
+            case BLUE_STAINED_GLASS_PANE -> string = ChatColor.DARK_BLUE + string;
+            case BROWN_STAINED_GLASS_PANE -> string = ChatColor.GRAY + string;
+            case GREEN_STAINED_GLASS_PANE -> string = ChatColor.DARK_GREEN + string;
+            case RED_STAINED_GLASS_PANE -> string = ChatColor.DARK_RED + string;
         }
         return string;
     }

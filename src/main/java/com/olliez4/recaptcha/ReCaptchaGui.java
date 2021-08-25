@@ -224,11 +224,9 @@ public class ReCaptchaGui implements Listener {
                 if (!isPlayerVerified(player)) {
                     try {
                         // If the dismissed inventory is the Captcha inventory, the player
-                        if (player.getOpenInventory() != null) {
-                            if (!player.getOpenInventory().getTitle().contains(title)) {
-                                // Prevent double logging
-                                send(player);
-                            }
+                        if (!player.getOpenInventory().getTitle().contains(title)) {
+                            // Prevent double logging
+                            send(player);
                         }
                     } catch (Exception ignored) {
                     }

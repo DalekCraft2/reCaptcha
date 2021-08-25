@@ -54,8 +54,8 @@ public class FailureLogger {
         // The placeholder
         int times = 0;
         // Iterate through all the times they have failed and add to config after every pass
-        for (String string : plugin.getConfig().getStringList("Failed-Captcha-Attempts." + player.getName())) {
-            if (string.contains(player.getUniqueId().toString())) {
+        for (String s : plugin.getConfig().getStringList("Failed-Captcha-Attempts." + player.getName())) {
+            if (s.contains(player.getUniqueId().toString())) {
                 times++;
             }
         }

@@ -327,8 +327,8 @@ public class ReCaptchaGui implements Listener {
     private String formatItemName(Material material) {
         String name = material.toString().replaceAll("_STAINED_GLASS_PANE", "");
         StringBuilder formattedName = new StringBuilder();
-        for (String string : name.split("_")) {
-            formattedName.append(string.substring(0, 1).toUpperCase()).append(string.substring(1).toLowerCase()).append(" ");
+        for (String s : name.split("_")) {
+            formattedName.append(s.substring(0, 1).toUpperCase()).append(s.substring(1).toLowerCase()).append(" ");
         }
         return applyColour(formattedName.toString(), material);
     }
@@ -336,25 +336,25 @@ public class ReCaptchaGui implements Listener {
     /**
      * Adds a colour to a {@link String} based on its {@link Material}.
      *
-     * @param string   the {@link String} to colour
+     * @param s   the {@link String} to colour
      * @param material the {@link Material} of the {@link String}
      * @return the coloured {@link String}
      */
-    private String applyColour(String string, Material material) {
+    private String applyColour(String s, Material material) {
         switch (material) {
-            case WHITE_STAINED_GLASS_PANE -> string = ChatColor.WHITE + string;
-            case ORANGE_STAINED_GLASS_PANE -> string = ChatColor.GOLD + string;
-            case MAGENTA_STAINED_GLASS_PANE, PURPLE_STAINED_GLASS_PANE -> string = ChatColor.DARK_PURPLE + string;
-            case LIGHT_BLUE_STAINED_GLASS_PANE -> string = ChatColor.AQUA + string;
-            case YELLOW_STAINED_GLASS_PANE -> string = ChatColor.YELLOW + string;
-            case LIME_STAINED_GLASS_PANE -> string = ChatColor.GREEN + string;
-            case PINK_STAINED_GLASS_PANE -> string = ChatColor.LIGHT_PURPLE + string;
-            case CYAN_STAINED_GLASS_PANE -> string = ChatColor.DARK_AQUA + string;
-            case BLUE_STAINED_GLASS_PANE -> string = ChatColor.DARK_BLUE + string;
-            case BROWN_STAINED_GLASS_PANE -> string = ChatColor.GRAY + string;
-            case GREEN_STAINED_GLASS_PANE -> string = ChatColor.DARK_GREEN + string;
-            case RED_STAINED_GLASS_PANE -> string = ChatColor.DARK_RED + string;
+            case WHITE_STAINED_GLASS_PANE -> s = ChatColor.WHITE + s;
+            case ORANGE_STAINED_GLASS_PANE -> s = ChatColor.GOLD + s;
+            case MAGENTA_STAINED_GLASS_PANE, PURPLE_STAINED_GLASS_PANE -> s = ChatColor.DARK_PURPLE + s;
+            case LIGHT_BLUE_STAINED_GLASS_PANE -> s = ChatColor.AQUA + s;
+            case YELLOW_STAINED_GLASS_PANE -> s = ChatColor.YELLOW + s;
+            case LIME_STAINED_GLASS_PANE -> s = ChatColor.GREEN + s;
+            case PINK_STAINED_GLASS_PANE -> s = ChatColor.LIGHT_PURPLE + s;
+            case CYAN_STAINED_GLASS_PANE -> s = ChatColor.DARK_AQUA + s;
+            case BLUE_STAINED_GLASS_PANE -> s = ChatColor.DARK_BLUE + s;
+            case BROWN_STAINED_GLASS_PANE -> s = ChatColor.GRAY + s;
+            case GREEN_STAINED_GLASS_PANE -> s = ChatColor.DARK_GREEN + s;
+            case RED_STAINED_GLASS_PANE -> s = ChatColor.DARK_RED + s;
         }
-        return string;
+        return s;
     }
 }
